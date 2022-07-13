@@ -1,0 +1,32 @@
+/**** font *****************************/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+/***************************************/
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+.big {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#score {
+    font-size: 17px;
+}
+
+#score-text {
+    font-weight: 600;
+}
+#score-number {
+    font-weight: 400;
+}
+
+#gameboard {
+    background-color: white;
+    border: 2px solid black;
+}
+
+.nomargin {
+    margin: 0;
+}
