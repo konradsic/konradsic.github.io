@@ -27,6 +27,11 @@
     border: 2px solid black;
 }
 
+#score-points-added {
+  font-weight: 200;
+}
+
 .nomargin {
     margin: 0;
 }
+
