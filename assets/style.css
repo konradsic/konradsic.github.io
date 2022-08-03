@@ -49,3 +49,44 @@
 .points {
   font-weight: 500;
 }
+
+.options-menu {
+  width: 38%;
+  max-height: 90%;
+  position: relative;
+  float: left;
+}
+#game-container {
+  width: 55%;
+  height: 70%;
+}
+
+.select-level {
+  margin-top: 10px;
+  font-weight: 400;
+  border-color: black;
+  border-radius: 5px;
+  width: 25%;
+  height: 25px;
+}
+
+.button-color-green {
+  background-color: rgb(34, 206, 0);
+}
+.button-color-green:hover {
+  background-color: rgb(95, 253, 63);
+}
+
+.button-color-yellow {
+  background-color: rgb(206, 206, 0);
+}
+.button-color-yellow:hover {
+  background-color: rgb(207, 230, 0);
+}
+
+.button-color-red {
+  background-color: red;
+}
+.button-color-red:hover {
+  background-color: rgb(255, 62, 62);
+}

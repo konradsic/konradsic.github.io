@@ -2,12 +2,14 @@
 let score, board, ctx, addedPoints;
 let mouse = false;
 let mouseX, mouseY;
-let howManyX, howManyY;
 let colorStorage = [];
 let selectedStorageX = [];
 let selectedStorageY = [];
-let colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"]; //red and orange + yellow, green, blue (rgb colors not defaults)
-let engagements = [
+// const
+const howManyX = 13;
+const howManyY = 13;
+const colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"]; //red and orange + yellow, green, blue (rgb colors not defaults)
+const engagements = [
   "Dobrze!",
   "Świetnie ci idzie!",
   "Super!",
@@ -27,8 +29,6 @@ board = document.getElementById("gameboard");
 addedPoints = document.getElementById("score-points-added");
 ctx = board.getContext("2d");
 
-howManyX = 13;
-howManyY = 13;
 let firstColor = -1;
 /////// functions ///////////////////////////////
 
@@ -64,6 +64,21 @@ function duplicateExsists(dup1, dup2, list1, list2) {
   return false;
 }
 
+function convertPoints(p) {
+  res = 0
+  for (let i = 1; i <= p; i++) {
+    res += 100;
+    if (i >= 5) {
+      res *= 1.05;
+    }
+    if (i%6 == 0) {
+      let bonus_i = (i/5)/2
+      res *= (1+bonus_i)
+    }
+  }
+  return Math.round(res)
+}
+
 // game
 function givePoints(itemsX, itemsY) {
   //console.log(itemsX, itemsY);
@@ -95,7 +110,7 @@ function givePoints(itemsX, itemsY) {
     }
     otherColorCounter++;
   }
-  let points = result * 100;
+  let points = convertPoints(result)
   if (otherColorCounter >= 1) {
     let minusPoints = 200 * otherColorCounter * -1;
     score.innerHTML = parseInt(score.innerHTML) + minusPoints;
@@ -210,7 +225,7 @@ async function redrawBoard() {
   let boardSizeY = board.height;
   let cubeSizeX = boardSizeX / howManyX;
   let cubeSizeY = boardSizeY / howManyY;
-  let colorStorageCopy = -1;
+  let colorStorageCopy = [];
   // the whole mechanic i messed up, "falling blocks" B) but like 80% done edit: wow it actually works!
   for (let ctrl = 0; ctrl < 10; ctrl++) {
     for (let i = 0; i < howManyX; i++) {

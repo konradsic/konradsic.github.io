@@ -30,9 +30,20 @@
         <span id="score-points-added"></span>
       </div>
       <br />
+      <div id="game-container">
+        <canvas id="gameboard" width="600px" height="600px"></canvas>
+        <div class="options-menu">
+          <fieldset class>
+            <legend><b> Opcje gry </b></legend>
 
-      <canvas id="gameboard" width="600px" height="600px"></canvas>
-
+            <span style="font-weight: 500;">Poziom trudności:</span>
+            <br />
+            <button id="easy" class="select-level button-color-green">Łatwy</button>
+            <button id="medium" class="select-level button-color-yellow">Średni</button>
+            <button id="hard" class="select-level button-color-red">Trudny</button>
+          </fieldset>
+        </div>
+      </div>
       <br />
       <b class="big" id="howtoplay">Jak grać?</b><br />
       Gracz otrzymuje planszę jak powyżej. Zadaniem gracza jest zaznaczenie
@@ -48,7 +59,7 @@
       Nie można się cofać, inaczej kolejne punkty nie zostaną przyznane <br />
 
       <b class="big" id="score-table">Punktacja</b><br />
-      Każde sąsiednie zaznaczone pole <b class="points green">+100</b> <br />
+      Każde sąsiednie zaznaczone pole <b class="points green">+100</b> dodatkowo gra przyznaje bonusy za każde kolejne zaznaczone pola<br />
       Każde pole o innym kolorze niż pierwsze zaznaczone
       <b class="points red">-200</b> <br />
       Aby wygrać należy zaznaczać pola dopóki
