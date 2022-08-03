@@ -6,7 +6,7 @@ let howManyX, howManyY;
 let colorStorage = [];
 let selectedStorageX = [];
 let selectedStorageY = [];
-let colors = ["aquamarine", "violet", "yellow", "lightgreen", "orange"];
+let colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"]; //red and orange + yellow, green, blue (rgb colors not defaults)
 let engagements = [
   "Dobrze!",
   "Świetnie ci idzie!",
@@ -27,8 +27,8 @@ board = document.getElementById("gameboard");
 addedPoints = document.getElementById("score-points-added");
 ctx = board.getContext("2d");
 
-howManyX = 10;
-howManyY = 10;
+howManyX = 13;
+howManyY = 13;
 let firstColor = -1;
 /////// functions ///////////////////////////////
 
