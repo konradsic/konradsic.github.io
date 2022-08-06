@@ -1,3 +1,18 @@
+// functions for getting GET parameters from website
+function getSearchParameters() {
+  var prmstr = window.location.search.substr(1);
+  return prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+}
+
+function transformToAssocArray( prmstr ) {
+  var params = {};
+  var prmarr = prmstr.split("&");
+  for ( var i = 0; i < prmarr.length; i++) {
+      var tmparr = prmarr[i].split("=");
+      params[tmparr[0]] = tmparr[1];
+  }
+  return params;
+}
 /////// declaring variables /////////////////////
 let score, board, ctx, addedPoints;
 let mouse = false;
@@ -5,10 +20,22 @@ let mouseX, mouseY;
 let colorStorage = [];
 let selectedStorageX = [];
 let selectedStorageY = [];
+let howManyX, howManyY, colors;
 // const
-const howManyX = 13;
-const howManyY = 13;
-const colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"]; //red and orange + yellow, green, blue (rgb colors not defaults)
+const level = getSearchParameters().level;
+if (level == "easy") {
+  colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"];
+  howManyX = 13;
+  howManyY = 13;
+} else if (level == "medium") {
+  colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple"];
+  howManyX = 11;
+  howManyY = 11;
+} else if (level == "hard") {
+  colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple", "pink"];
+  howManyX = 9;
+  howManyY = 9;
+}
 const engagements = [
   "Dobrze!",
   "Świetnie ci idzie!",
@@ -291,3 +318,5 @@ document.addEventListener("mouseup", () => {
   firstColor = -1;
   redrawBoard();
 });
+
+var params = getSearchParameters();

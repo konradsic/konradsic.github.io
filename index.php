@@ -21,10 +21,19 @@
     <link rel="stylesheet" type="text/css" href="assets/style.css" />
   </head>
   <body>
+    <!------------ php section that redirects when level difficulty is not correct or it does not exist ---->
     <?php
-      $difficulty = $_GET['level'];
-      echo "You have chosen" . $difficulty . ".";
+      $level = isset($_GET['level']);
+      if ($level) {
+        $level = $_GET['level'];
+        if (!(($level == "easy") || ($level == "medium") || ($level == "hard"))) {
+          header("Location: index?level=easy");
+        }
+      } else {
+        header("Location: index?level=easy");
+      }
     ?>
+    <!-------------------------------------------------------------------------------------------------------------------------->
     <center>
       <h2>Połącz pola - gra!</h2>
 
@@ -42,9 +51,15 @@
 
             <span style="font-weight: 500;">Poziom trudności:</span>
             <br />
-            <button id="easy" class="select-level button-color-green">Łatwy</button>
-            <button id="medium" class="select-level button-color-yellow">Średni</button>
-            <button id="hard" class="select-level button-color-red">Trudny</button>
+            <form method="POST" action="index?level=easy">
+              <button type="submit" id="easy" class="select-level button-color-green">Łatwy</button>
+            </form>
+            <form method="POST" action="index?level=medium">
+              <button type="submit" id="medium" class="select-level button-color-yellow">Średni</button>
+            </form>
+            <form method="POST" action="index?level=hard">
+              <button type="submit" id="hard" class="select-level button-color-red">Trudny</button>
+            </form>
           </fieldset>
         </div>
       </div>
