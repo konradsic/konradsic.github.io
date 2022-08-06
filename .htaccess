@@ -5,4 +5,4 @@ Deny from all
 </FilesMatch>
 
 RewriteEngine on
-RewriteRule index index.html
+RewriteRule index index.php

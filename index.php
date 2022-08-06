@@ -21,6 +21,10 @@
     <link rel="stylesheet" type="text/css" href="assets/style.css" />
   </head>
   <body>
+    <?php
+      $difficulty = $_GET['level'];
+      echo "You have chosen" . $difficulty . ".";
+    ?>
     <center>
       <h2>Połącz pola - gra!</h2>
 
