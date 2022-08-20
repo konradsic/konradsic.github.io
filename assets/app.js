@@ -14,6 +14,7 @@ function transformToAssocArray( prmstr ) {
   return params;
 }
 /////// declaring variables /////////////////////
+let listOfGoodColors = [];
 let score, board, ctx, addedPoints;
 let mouse = false;
 let mouseX, mouseY;
@@ -21,20 +22,27 @@ let colorStorage = [];
 let selectedStorageX = [];
 let selectedStorageY = [];
 let howManyX, howManyY, colors;
+////////////////////////////////
+let statsEasy = document.getElementById("stats-easy");
+let statsMedium = document.getElementById("stats-medium");
+let statsHard = document.getElementById("stats-hard");
+if (document.cookie.length == 0) {
+  document.cookie = "levelData=0,0,0;";
+}
 // const
 const level = getSearchParameters().level;
 if (level == "easy") {
   colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"];
-  howManyX = 13;
-  howManyY = 13;
+  howManyX = 15;
+  howManyY = 15;
 } else if (level == "medium") {
   colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple"];
-  howManyX = 11;
-  howManyY = 11;
+  howManyX = 13;
+  howManyY = 13;
 } else if (level == "hard") {
-  colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple", "pink"];
-  howManyX = 9;
-  howManyY = 9;
+  colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple", "rgb(252, 3, 236)"];
+  howManyX = 12;
+  howManyY = 12;
 }
 const engagements = [
   "Dobrze!",
@@ -105,6 +113,33 @@ function convertPoints(p) {
   }
   return Math.round(res)
 }
+function recursiveCheck(x, y, board, currentColor, currentCount,listOfGoodColors) {
+  let color = board[x][y]
+  console.log(x,y,currentColor,currentCount, color)
+  if (currentColor == -1) currentColor = color;
+  if (board[x][y+1] == currentColor) {
+    currentCount++;
+    listOfGoodColors.push(color)
+    if (currentCount == 4) return true;
+  } else if (board[x+1][y] == currentColor) {
+    currentCount++;
+    listOfGoodColors.push(color)
+    if (currentCount == 4) return true;
+  } else {
+    currentColor = -1;
+    currentCount = 0;
+    listofGoodColors = []
+  }
+  try {
+    return recursiveCheck(x+1,y,board,currentColor,currentCount,listOfGoodColors) || recursiveCheck(x,y+1, board,currentColor,currentCount,listOfGoodColors)
+  } catch(err) {
+    try {
+      return recursiveCheck(x, y+1, board,currentColor,currentCount,listOfGoodColors)
+    } catch(err) {
+      return recursiveCheck(x+1, y, board,currentColor,currentCount,listOfGoodColors)
+    }
+  }
+}
 
 // game
 function givePoints(itemsX, itemsY) {
@@ -156,12 +191,7 @@ function givePoints(itemsX, itemsY) {
     addedPoints.innerHTML = `(<b class="points green">+${points}</b> - ${
       engagements[Math.round(Math.random() * (engagements.length - 1))]
     })`;
-    let finalPoints = parseInt(score.innerHTML);
-    if (finalPoints >= 10000) {
-      alert("Gratulacje! Wygrałeś!");
-      generateBoard(board, howManyX, howManyY);
-      return;
-    }
+    
     for (let i = 0; i < nullCounter.length; i++) {
       let element = nullCounter[i];
       let selectX = element[0];
@@ -288,6 +318,14 @@ async function redrawBoard() {
       drawRectangle(x * cubeSizeX, y * cubeSizeY, cubeSizeX, cubeSizeY, color);
     }
   }
+  let finalPoints = parseInt(score.innerHTML);
+  listOfGoodColors = [];
+  if ((recursiveCheck(0,0,colorStorage,-1,0,listOfGoodColors) == undefined) || (recursiveCheck(0,0,colorStorage,-1,0,listOfGoodColors) == false)) {
+    alert("Gratulacje, wygrałeś! Wynik: " + finalPoints);
+    generateBoard(board, howManyX, howManyY);
+    return;
+  }
+  console.log(listOfGoodColors)
   selectedStorageX = [];
   selectedStorageY = [];
   console.log(
@@ -318,5 +356,3 @@ document.addEventListener("mouseup", () => {
   firstColor = -1;
   redrawBoard();
 });
-
-var params = getSearchParameters();

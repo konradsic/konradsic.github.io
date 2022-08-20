@@ -52,10 +52,19 @@
 
 .options-menu {
   width: 38%;
-  max-height: 90%;
+  max-height: 50%;
   position: relative;
   float: left;
 }
+
+.game-statistics {
+  width: 38%;
+  max-height: 50%;
+  position: relative;
+  float: left;
+  top: -100px;
+}
+
 #game-container {
   width: 55%;
   height: 70%;

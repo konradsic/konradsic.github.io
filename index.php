@@ -21,19 +21,18 @@
     <link rel="stylesheet" type="text/css" href="assets/style.css" />
   </head>
   <body>
-    <!------------ php section that redirects when level difficulty is not correct or it does not exist ---->
     <?php
+      // php section that redirects when level difficulty is not correct or it does not exist 
       $level = isset($_GET['level']);
       if ($level) {
         $level = $_GET['level'];
         if (!(($level == "easy") || ($level == "medium") || ($level == "hard"))) {
-          header("Location: index?level=easy");
+          header("Location: ?level=easy");
         }
       } else {
-        header("Location: index?level=easy");
+        header("Location: ?level=easy");
       }
     ?>
-    <!-------------------------------------------------------------------------------------------------------------------------->
     <center>
       <h2>Połącz pola - gra!</h2>
 
@@ -46,9 +45,9 @@
       <div id="game-container">
         <canvas id="gameboard" width="600px" height="600px"></canvas>
         <div class="options-menu">
-          <fieldset class>
-            <legend><b> Opcje gry </b></legend>
-
+          <fieldset>
+            <legend><b> Menu </b></legend>
+            <h3> Opcje gry </h3>
             <span style="font-weight: 500;">Poziom trudności:</span>
             <br />
             <form method="POST" action="index?level=easy">
@@ -60,8 +59,14 @@
             <form method="POST" action="index?level=hard">
               <button type="submit" id="hard" class="select-level button-color-red">Trudny</button>
             </form>
+            <br /><br /><br />
+            <h3> Statystyki </h3>
+            <div id="stats-easy">Najwyższy wynik (poz. łatwy): <b>0</b></div>
+            <div id="stats-medium">Najwyższy wynik (poz. średni): <b>0</b></div>
+            <div id="stats-hard">Najwyższy wynik (poz. trudny): <b>0</b></div>
           </fieldset>
         </div>
+          
       </div>
       <br />
       <b class="big" id="howtoplay">Jak grać?</b><br />
@@ -75,7 +80,6 @@
       Sąsiadujące pola to takie które mają wspólny bok. Zaznaczanie musi odbywać
       się w jednym ciągu, nie można zaznaczyć pól które nie są bezpośrednimi
       sąsiadami. <br />
-      Nie można się cofać, inaczej kolejne punkty nie zostaną przyznane <br />
 
       <b class="big" id="score-table">Punktacja</b><br />
       Każde sąsiednie zaznaczone pole <b class="points green">+100</b> dodatkowo gra przyznaje bonusy za każde kolejne zaznaczone pola<br />
