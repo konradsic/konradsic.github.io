@@ -44,6 +44,12 @@
       <br />
       <div id="game-container">
         <canvas id="gameboard" width="600px" height="600px"></canvas>
+        <div id="timer">
+          <fieldset>
+            <legend><b>Czas</b></legend>
+            Pozostało: <span id="time-left" style="font-weight: 500;"></span>
+          </fieldset>
+        </div>
         <div class="options-menu">
           <fieldset>
             <legend><b> Menu </b></legend>
@@ -61,30 +67,26 @@
             </form>
             <br /><br /><br />
             <h3> Statystyki </h3>
-            <div id="stats-easy">Najwyższy wynik (poz. łatwy): <b>0</b></div>
-            <div id="stats-medium">Najwyższy wynik (poz. średni): <b>0</b></div>
-            <div id="stats-hard">Najwyższy wynik (poz. trudny): <b>0</b></div>
+            Poziom łatwy: <span style="font-weight: 500" id="stats-easy">0</span><br />
+            Poziom średni: <span style="font-weight: 500" id="stats-medium">0</span><br />
+            Poziom trudny: <span style="font-weight: 500" id="stats-hard">0</span><br />
           </fieldset>
         </div>
           
       </div>
       <br />
       <b class="big" id="howtoplay">Jak grać?</b><br />
-      Gracz otrzymuje planszę jak powyżej. Zadaniem gracza jest zaznaczenie
-      wszystkich sąsiadujących pól o tym samym kolorze. <br />
+      Zadaniem gracza jest zaznaczenie wszystkich sąsiadujących pól o tym samym kolorze.
       Zaznaczone pola o tym samym kolorze znikają a pozostałe spadają w dół.
       <br />
       W pojedynczym ruchu gracz może zaznaczyć minimalnie 4 sąsiadujące pola o
       tym samym kolorze aby otrzymać punkty. Zaznaczenie pól o różnych kolorach
-      oznacza stratę punktów. <br />
-      Sąsiadujące pola to takie które mają wspólny bok. Zaznaczanie musi odbywać
+      oznacza stratę punktów. Sąsiadujące pola to takie które mają wspólny bok. Zaznaczanie musi odbywać
       się w jednym ciągu, nie można zaznaczyć pól które nie są bezpośrednimi
       sąsiadami. <br />
 
       <b class="big" id="score-table">Punktacja</b><br />
-      Każde sąsiednie zaznaczone pole <b class="points green">+100</b> dodatkowo gra przyznaje bonusy za każde kolejne zaznaczone pola<br />
-      Każde pole o innym kolorze niż pierwsze zaznaczone
-      <b class="points red">-200</b> <br />
+      Każde sąsiednie zaznaczone pole <b class="points green">+100 i bonusy</b> w przypadku zaznaczenia złego pola <b class="points red">-200</b><br />
       Aby wygrać należy zaznaczać pola dopóki
       <b class="points blue">nie będzie</b> możliwości zaznaczenia minimalnie 4
       sąsiadujących pól<br />

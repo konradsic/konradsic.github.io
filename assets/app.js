@@ -15,6 +15,8 @@ function transformToAssocArray( prmstr ) {
 }
 /////// declaring variables /////////////////////
 let listOfGoodColors = [];
+let indexOfGoodColors = [];
+let countDownTime = 0;
 let score, board, ctx, addedPoints;
 let mouse = false;
 let mouseX, mouseY;
@@ -22,7 +24,9 @@ let colorStorage = [];
 let selectedStorageX = [];
 let selectedStorageY = [];
 let howManyX, howManyY, colors;
+let timerFunc = () => {};
 ////////////////////////////////
+let timer = document.getElementById("time-left");
 let statsEasy = document.getElementById("stats-easy");
 let statsMedium = document.getElementById("stats-medium");
 let statsHard = document.getElementById("stats-hard");
@@ -33,16 +37,17 @@ if (document.cookie.length == 0) {
 const level = getSearchParameters().level;
 if (level == "easy") {
   colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)"];
-  howManyX = 15;
-  howManyY = 15;
+  howManyX = 16;
+  howManyY = 16;
 } else if (level == "medium") {
   colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple"];
-  howManyX = 13;
-  howManyY = 13;
-} else if (level == "hard") {
+  howManyX = 15;
+  howManyY = 15;
+  countDownTime = 270000} 
+else if (level == "hard") {
   colors = ["red","orange","rgb(255, 251, 0)","rgb(34, 206, 0)","rgb(0, 204, 255)", "purple", "rgb(252, 3, 236)"];
-  howManyX = 12;
-  howManyY = 12;
+  howManyX = 15;
+  howManyY = 15;
 }
 const engagements = [
   "Dobrze!",
@@ -99,6 +104,15 @@ function duplicateExsists(dup1, dup2, list1, list2) {
   return false;
 }
 
+function elementInArray(arr, elem) {
+  for (let i=0; i < arr.length; i++) {
+    if (arr[i] == elem) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function convertPoints(p) {
   res = 0
   for (let i = 1; i <= p; i++) {
@@ -118,17 +132,23 @@ function recursiveCheck(x, y, board, currentColor, currentCount,listOfGoodColors
   console.log(x,y,currentColor,currentCount, color)
   if (currentColor == -1) currentColor = color;
   if (board[x][y+1] == currentColor) {
-    currentCount++;
-    listOfGoodColors.push(color)
-    if (currentCount == 4) return true;
+    if (!elementInArray(indexOfGoodColors, `${x}, ${y+1}`)) {
+      indexOfGoodColors.push(`${x}, ${y+1}`)
+      currentCount++;
+      listOfGoodColors.push(color)
+      if (currentCount == 4) return true;
+    }
   } else if (board[x+1][y] == currentColor) {
-    currentCount++;
-    listOfGoodColors.push(color)
-    if (currentCount == 4) return true;
+    if (!elementInArray(indexOfGoodColors, `${x}, ${y+1}`)) {
+      indexOfGoodColors.push(`${x+1}, ${y}`)
+      currentCount++;
+      listOfGoodColors.push(color)
+      if (currentCount == 4) return true;
+    }
   } else {
     currentColor = -1;
-    currentCount = 0;
-    listofGoodColors = []
+    currentCount = 1;
+    listOfGoodColors = [];
   }
   try {
     return recursiveCheck(x+1,y,board,currentColor,currentCount,listOfGoodColors) || recursiveCheck(x,y+1, board,currentColor,currentCount,listOfGoodColors)
@@ -139,6 +159,22 @@ function recursiveCheck(x, y, board, currentColor, currentCount,listOfGoodColors
       return recursiveCheck(x+1, y, board,currentColor,currentCount,listOfGoodColors)
     }
   }
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
 }
 
 // game
@@ -180,6 +216,7 @@ function givePoints(itemsX, itemsY) {
     let finalPoints = parseInt(score.innerHTML);
     if (finalPoints < 0) {
       alert("Przegrałeś :(");
+      clearInterval(timerFunc)
       generateBoard(board, howManyX, howManyY);
       return;
     }
@@ -222,6 +259,46 @@ function getDate() {
   }/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
 }
 
+function endGame() {
+  let points = score.innerHTML;
+  alert("Koniec czasu! Wynik: " + points);
+  cookieScore = getCookie("levelData");
+  levelStats = cookieScore.split(",");
+  if (level == "easy") {
+    if (levelStats[0] < parseInt(points)) {
+      levelStats[0] = parseInt(points);
+    }
+  } else if (level == "medium") {
+    if (levelStats[1] < parseInt(points)) {
+      levelStats[1] = parseInt(points);
+    }
+  } else if (level == "hard") {
+    if (levelStats[2] < parseInt(points)) {
+      levelStats[2] = parseInt(points);
+    }
+  }
+  resultData = levelStats[0] + "," + levelStats[1] + "," + levelStats[2];
+  completeCookie = "levelData=" + resultData + ";";
+  document.cookie = completeCookie;
+  generateBoard(board, howManyX, howManyY);
+}
+function startTimer() {
+  let countDown = new Date().getTime() + countDownTime;
+  timerFunc = setInterval(function() {
+    let now = new Date().getTime();
+    let distance = countDown - now;
+    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    timer.innerHTML = minutes + ":" + seconds;
+    if (minutes == 0 && seconds == 0) {
+      clearInterval(timerFunc)
+      endGame();
+      return;
+    }
+  }, 1000);
+}
+
 function hoverElement() {
   let sizeX = board.width / howManyX;
   let sizeY = board.height / howManyY;
@@ -251,6 +328,14 @@ function hoverElement() {
 }
 
 function generateBoard(board, countX, countY) {
+  // high score load //
+  let cookieData = getCookie("levelData");
+  let splitLevelData = cookieData.split(",");
+  statsEasy.innerHTML = splitLevelData[0];
+  statsMedium.innerHTML = splitLevelData[1];
+  statsHard.innerHTML = splitLevelData[2];
+
+  // generating the board //
   colorStorage = [];
   score.innerHTML = 0;
   addedPoints.innerHTML = "(Zaczynamy!)";
@@ -259,6 +344,13 @@ function generateBoard(board, countX, countY) {
   let boardSizeY = board.height;
   let cubeSizeX = boardSizeX / countX;
   let cubeSizeY = boardSizeY / countY;
+  if (level == "easy") {
+    countDownTime = 300000;
+  } else if (level == "medium") {
+    countDownTime = 270000;
+  } else if (level == "hard") {
+    countDownTime = 240000;
+  }
   for (let x = 0; x < countX; x++) {
     colorStorage.push([]);
     for (let y = 0; y < countY; y++) {
@@ -269,6 +361,7 @@ function generateBoard(board, countX, countY) {
   }
   selectedStorageX = [];
   selectedStorageY = [];
+  startTimer();
   console.log(
     `${getDate()} board generating finished in ${
       new Date().getTime() - beginningTime
@@ -320,11 +413,20 @@ async function redrawBoard() {
   }
   let finalPoints = parseInt(score.innerHTML);
   listOfGoodColors = [];
+  indexOfGoodColors = [];
   if ((recursiveCheck(0,0,colorStorage,-1,0,listOfGoodColors) == undefined) || (recursiveCheck(0,0,colorStorage,-1,0,listOfGoodColors) == false)) {
     alert("Gratulacje, wygrałeś! Wynik: " + finalPoints);
     generateBoard(board, howManyX, howManyY);
     return;
   }
+  // high score load //
+  let cookieData = getCookie("levelData");
+  let splitLevelData = cookieData.split(",");
+  statsEasy.innerHTML = splitLevelData[0];
+  statsMedium.innerHTML = splitLevelData[1];
+  statsHard.innerHTML = splitLevelData[2];
+  
+  // rest of redrawing //
   console.log(listOfGoodColors)
   selectedStorageX = [];
   selectedStorageY = [];
@@ -334,8 +436,11 @@ async function redrawBoard() {
     }ms!`
   );
 }
-
-generateBoard(board, howManyY, howManyX);
+async function startGame() {
+  sleep(500);
+  generateBoard(board, howManyY, howManyX);
+}
+startGame();
 
 /////// events //////////////////////////////////
 document.addEventListener("mousemove", (event) => {
