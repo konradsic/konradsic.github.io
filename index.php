@@ -65,6 +65,8 @@
             <form method="POST" action="index?level=hard">
               <button type="submit" id="hard" class="select-level button-color-red">Trudny</button>
             </form>
+            <br><br><br>
+            <button onclick="restartLevelFromButton();" type="submit" id="button-restart">Restartuj grę</button>
             <br /><br /><br />
             <h3> Statystyki </h3>
             Poziom łatwy: <span style="font-weight: 500" id="stats-easy">0</span><br />

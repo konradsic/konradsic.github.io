@@ -127,39 +127,6 @@ function convertPoints(p) {
   }
   return Math.round(res)
 }
-function recursiveCheck(x, y, board, currentColor, currentCount,listOfGoodColors) {
-  let color = board[x][y]
-  console.log(x,y,currentColor,currentCount, color)
-  if (currentColor == -1) currentColor = color;
-  if (board[x][y+1] == currentColor) {
-    if (!elementInArray(indexOfGoodColors, `${x}, ${y+1}`)) {
-      indexOfGoodColors.push(`${x}, ${y+1}`)
-      currentCount++;
-      listOfGoodColors.push(color)
-      if (currentCount == 4) return true;
-    }
-  } else if (board[x+1][y] == currentColor) {
-    if (!elementInArray(indexOfGoodColors, `${x}, ${y+1}`)) {
-      indexOfGoodColors.push(`${x+1}, ${y}`)
-      currentCount++;
-      listOfGoodColors.push(color)
-      if (currentCount == 4) return true;
-    }
-  } else {
-    currentColor = -1;
-    currentCount = 1;
-    listOfGoodColors = [];
-  }
-  try {
-    return recursiveCheck(x+1,y,board,currentColor,currentCount,listOfGoodColors) || recursiveCheck(x,y+1, board,currentColor,currentCount,listOfGoodColors)
-  } catch(err) {
-    try {
-      return recursiveCheck(x, y+1, board,currentColor,currentCount,listOfGoodColors)
-    } catch(err) {
-      return recursiveCheck(x+1, y, board,currentColor,currentCount,listOfGoodColors)
-    }
-  }
-}
 
 function getCookie(cname) {
   let name = cname + "=";
@@ -217,6 +184,7 @@ function givePoints(itemsX, itemsY) {
     if (finalPoints < 0) {
       alert("Przegrałeś :(");
       clearInterval(timerFunc)
+      console.log("clear interval for timer function")
       generateBoard(board, howManyX, howManyY);
       return;
     }
@@ -259,6 +227,22 @@ function getDate() {
   }/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
 }
 
+var countDown;
+function doTimer() {
+  var now = new Date().getTime();
+  var distance = countDown - now;
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  if (seconds < 10) seconds = "0" + seconds;
+  timer.innerHTML = minutes + ":" + seconds;
+  if (minutes == 0 && seconds == 0) {
+    console.log("clear interval for timer function")
+    clearInterval(timerFunc);
+    endGame();
+    return;
+  }
+}
+
 function endGame() {
   let points = score.innerHTML;
   alert("Koniec czasu! Wynik: " + points);
@@ -283,20 +267,8 @@ function endGame() {
   generateBoard(board, howManyX, howManyY);
 }
 function startTimer() {
-  let countDown = new Date().getTime() + countDownTime;
-  timerFunc = setInterval(function() {
-    let now = new Date().getTime();
-    let distance = countDown - now;
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    timer.innerHTML = minutes + ":" + seconds;
-    if (minutes == 0 && seconds == 0) {
-      clearInterval(timerFunc)
-      endGame();
-      return;
-    }
-  }, 1000);
+  countDown = new Date().getTime() + countDownTime;
+  timerFunc = setInterval(doTimer, 1000);
 }
 
 function hoverElement() {
@@ -368,6 +340,11 @@ function generateBoard(board, countX, countY) {
     }ms!`
   );
 }
+function restartLevelFromButton() {
+  let points = parseInt(score.innerHTML)
+  alert(`Restart gry, wynik: ${points}!`)
+  generateBoard(board, howManyX, howManyY);
+}
 async function redrawBoard() {
   givePoints(selectedStorageX, selectedStorageY);
   let beginningTime = new Date().getTime();
@@ -375,8 +352,7 @@ async function redrawBoard() {
   let boardSizeY = board.height;
   let cubeSizeX = boardSizeX / howManyX;
   let cubeSizeY = boardSizeY / howManyY;
-  let colorStorageCopy = [];
-  // the whole mechanic i messed up, "falling blocks" B) but like 80% done edit: wow it actually works!
+  //let colorStorageCopy = [];
   for (let ctrl = 0; ctrl < 10; ctrl++) {
     for (let i = 0; i < howManyX; i++) {
       for (let j = howManyY - 1; j >= 0; j--) {
@@ -410,14 +386,6 @@ async function redrawBoard() {
       }
       drawRectangle(x * cubeSizeX, y * cubeSizeY, cubeSizeX, cubeSizeY, color);
     }
-  }
-  let finalPoints = parseInt(score.innerHTML);
-  listOfGoodColors = [];
-  indexOfGoodColors = [];
-  if ((recursiveCheck(0,0,colorStorage,-1,0,listOfGoodColors) == undefined) || (recursiveCheck(0,0,colorStorage,-1,0,listOfGoodColors) == false)) {
-    alert("Gratulacje, wygrałeś! Wynik: " + finalPoints);
-    generateBoard(board, howManyX, howManyY);
-    return;
   }
   // high score load //
   let cookieData = getCookie("levelData");
